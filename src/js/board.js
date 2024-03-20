@@ -72,6 +72,7 @@ export function getBoardInfo() {
     /\bfams\b/g, // "famS" isn't wordfiltered
     /\bFams\b/g,
     /\bFAMS\b/g,
+    /3004 Norfolk Dr/gi,
     /\bsoy/gi, // "soy" must be last
   ];
 
@@ -84,9 +85,6 @@ export function getBoardInfo() {
       break;
     case 'biz':
       wordFilters.push(/monkeypox/gi);
-      break;
-    case 'g':
-      wordFilters.push(/irwin/gi, /norfolk/gi);
       break;
     case 'mlp':
       wordFilters.push(/barbien\x69gger/gi);
