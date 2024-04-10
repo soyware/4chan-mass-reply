@@ -259,8 +259,18 @@ function addQuotesText(element, action) {
 
 function deleteCookie() {
   debugLog('Deleting 4chan_pass cookie');
-  document.cookie = '4chan_pass=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.4channel.org';
-  document.cookie = '4chan_pass=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.4chan.org';
+
+  browser.runtime.sendMessage({
+    message: 'deleteCookie',
+    cookieDomain: 'https://4chan.org/',
+    cookieName: '4chan_pass',
+  });
+
+  browser.runtime.sendMessage({
+    message: 'deleteCookie',
+    cookieDomain: 'https://4channel.org/',
+    cookieName: '4chan_pass',
+  });
 }
 
 function gotTextArea(element) {
@@ -337,7 +347,7 @@ function gotTextArea(element) {
     }
   });
 
-  createButton(div, '#️⃣', 'Anonymize File Hash', () => {
+  createButton(div, '#️⃣', 'Change File Hash', () => {
     const input = element.parentElement.parentElement.parentElement.querySelector('[type=file]');
     if (input && input.files.length) {
       anonFile(input.files[0]).then((anonedFile) => {

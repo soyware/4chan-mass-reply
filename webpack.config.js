@@ -9,6 +9,7 @@ module.exports = {
     contentBase: "./dist",
   },
   entry: {
+    background: "./src/js/background.js",
     content: "./src/js/content.js",
     popup: "./src/js/popup.js",
   },
