@@ -89,7 +89,7 @@ function changeRandomPixel(file, quality = 0.9) {
 
         // modify random pixel's red channel
         const index = getRandomInt(0, data.length / 4) * 4;
-        data[index] += ((data[index] === 255) ? -10 : 10);
+        data[index] += ((data[index] > 245) ? -10 : 10);
 
         ctx.putImageData(imgData, 0, 0);
 
