@@ -57,6 +57,7 @@ function createQuotesString(links, format, quoteBottom, characterLimit, maxLines
 
       break;
     }
+    // sometimes posts don't go through with single line mass reply
     default: {
       const quoteCount = Math.min(
         links.length,

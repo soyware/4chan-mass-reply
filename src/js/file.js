@@ -7,8 +7,8 @@ import {
 
 /*
  * Check if file is within file size limit, recompress into JPEG if not
- * or if the image is WebP.
  * If JPEG is still too large, reduce it's quality till it fits
+ * Also convert WebP to PNG before attemping JPEG
  */
 export function fileCompress(file, maxFileSize, startingQuality = 0.9) {
   return new Promise((resolve) => {
@@ -22,48 +22,70 @@ export function fileCompress(file, maxFileSize, startingQuality = 0.9) {
       return;
     }
 
-    let filename = file.name;
-
-    const lastDotIndex = filename.lastIndexOf('.');
-    if (lastDotIndex !== -1) {
-      filename = filename.slice(0, lastDotIndex);
-    }
-
-    filename += '.jpg';
-
     const reader = new FileReader();
     reader.addEventListener('load', () => {
       const img = new Image();
       img.onload = () => {
-        function attemptCompression(quality) {
-          debugLog(`File size too big. Attempting JPEG compression with quality: ${quality.toFixed(2)}`);
+        const cvs = document.createElement('canvas');
+        cvs.width = img.width;
+        cvs.height = img.height;
 
-          const cvs = document.createElement('canvas');
-          const ctx = cvs.getContext('2d');
-          cvs.width = img.width;
-          cvs.height = img.height;
-          ctx.drawImage(img, 0, 0);
+        const ctx = cvs.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        function attemptCompression(quality, png = false) {
+          let mime;
+
+          if (png) {
+            debugLog('Converting to PNG');
+            mime = 'image/png';
+          } else {
+            debugLog(`File size too big. Attempting JPEG compression with quality: ${quality.toFixed(2)}`);
+            mime = 'image/jpeg';
+          }
+
           cvs.toBlob((blob) => {
-            debugLog(`New file size - ${blob.size}`);
+            debugLog(`New file size - ${blob.size} bytes`);
+
             if (blob.size <= maxFileSize) {
               debugLog('Compression successful');
-              const compressedFile = new File([blob], filename, { type: 'image/jpeg' });
+
+              let filename = file.name;
+
+              const lastDotIndex = filename.lastIndexOf('.');
+              if (lastDotIndex !== -1) {
+                filename = filename.slice(0, lastDotIndex);
+              }
+
+              filename += (png ? '.png' : '.jpg');
+
+              const compressedFile = new File([blob], filename, { type: mime });
               resolve({ file: compressedFile, quality });
             } else if (quality > 0) {
-              quality -= (startingQuality / 3);
+              if (!png) {
+                quality -= (startingQuality / 3);
+              }
               attemptCompression(quality);
             } else {
               debugLog('Unable to compress further');
               resolve();
             }
-          }, 'image/jpeg', quality);
+          }, mime, quality);
         }
 
-        attemptCompression(startingQuality);
+        attemptCompression(startingQuality, (file.type === 'image/webp'));
+      };
+
+      img.onerror = () => {
+        debugLog('fileCompress: img failed to load image');
       };
 
       img.src = reader.result;
     });
+
+    reader.onerror = () => {
+      debugLog('fileCompress: reader failed to load image');
+    };
 
     reader.readAsDataURL(file);
   });

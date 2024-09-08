@@ -57,31 +57,52 @@ export function getBoardInfo() {
   document.head.appendChild(script);
   script.remove();
 
-  const wordFilters = [
+  let wordFilters = [
     /hi reddit/gi,
     /hello reddit/gi,
     /back to reddit/gi,
+    /literally reddit/gi,
+    /3004 Norfolk Dr/gi,
+    /3004 Norfolƙ Dr/gi, // seems like they filtered with a homoglyph (ƙ)
+    /3004 Νorfolk Dr/gi, // (Ν)
     /CUCK/g,
-    /\btbh\b/g, // "tbH" and "Tbh" isn't wordfiltered
+    /\btbh\b/g, // "tbH" and "Tbh" isn't filtered
     /\bTBH\b/g,
-    /\bsmh\b/g, // "smH" and "Smh" isn't wordfiltered
+    /\bsmh\b/g, // "smH" and "Smh" isn't filtered
     /\bSMH\b/g,
-    /\bfam\b/g, // "faM" isn't wordfiltered
+    /\bfam\b/g, // "faM" isn't filtered
     /\bFam\b/g,
     /\bFAM\b/g,
-    /\bfams\b/g, // "famS" isn't wordfiltered
+    /\bfams\b/g, // "famS" isn't filtered
     /\bFams\b/g,
     /\bFAMS\b/g,
-    /3004 Norfolk Dr/gi,
-    /\bsoy/gi, // "soy" must be last
+    /\bsoy/gi,
   ];
+
+  let filtersToRemove = [];
 
   const board = getBoard();
 
   switch (board) {
     case 'ck':
     case 'int':
-      wordFilters.pop(); // pop "soy"
+      filtersToRemove = [/\bsoy/gi];
+      break;
+    case 's4s':
+      filtersToRemove = [
+        /CUCK/g,
+        /\btbh\b/g,
+        /\bTBH\b/g,
+        /\bsmh\b/g,
+        /\bSMH\b/g,
+        /\bfam\b/g,
+        /\bFam\b/g,
+        /\bFAM\b/g,
+        /\bfams\b/g,
+        /\bFams\b/g,
+        /\bFAMS\b/g,
+        /\bsoy/gi,
+      ];
       break;
     case 'biz':
       wordFilters.push(/monkeypox/gi);
@@ -101,6 +122,11 @@ export function getBoardInfo() {
       );
       break;
   }
+
+  // eslint-disable-next-line
+  wordFilters = wordFilters.filter((regex) => {
+    return !filtersToRemove.some((toRemove) => regex.toString() === toRemove.toString());
+  });
 
   return {
     characterLimit,

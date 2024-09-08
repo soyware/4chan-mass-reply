@@ -71,6 +71,7 @@ function fileChanged(event) {
     boardInfo.maxFileSize,
     loadedFileQuality || 0.9,
   ).then((compressed) => {
+    // undefined when unable to fit within file size limit
     if (!compressed) return;
 
     target.files = createFileList(compressed.file);
@@ -162,23 +163,27 @@ function bypassWordfilter(text) {
       if (board !== 'r9k') {
         // check if we have a homoglyph
         const replacements = {
+          0: 'o',
+          a: 'ä',
+          B: 'Β',
+          b: 'Ь',
+          c: 'ϲ',
           C: 'Ϲ',
+          d: 'ԁ',
           F: 'Ϝ',
           H: 'Η',
-          K: 'Κ',
-          M: 'M',
-          N: 'Ν',
-          O: 'ⵔ',
-          S: 'Տ',
-          Y: 'Ү',
-          a: 'ä',
-          c: 'ϲ',
-          h: 'հ',
+          h: 'ℎ',
           k: 'ƙ',
+          K: 'Κ',
+          M: 'Μ',
+          N: 'Ν',
           n: 'ᥒ',
+          O: 'ⵔ',
           o: '𐐬',
           p: 'ρ',
+          S: 'Տ',
           s: '𐑈',
+          Y: 'Ү',
         };
 
         for (let j = match.length - 1; j >= 0; --j) {
