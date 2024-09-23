@@ -513,18 +513,18 @@ function mutationCallback(mutations) {
   mutations.forEach((mutation) => {
     // detect Get Captcha button text changing from Loading
     if (settings.slideCaptcha
-        && mutation.target
-        && mutation.target.id === 't-load'
-        && mutation.removedNodes.length
-        && mutation.removedNodes[0].data === 'Loading'
+      && mutation.target
+      && mutation.target.id === 't-load'
+      && mutation.removedNodes.length
+      && mutation.removedNodes[0].data === 'Loading'
     ) {
-      const parent = mutation.target.parentElement;
-      if (parent) {
-        const tfg = parent.querySelector('#t-fg');
-        const tbg = parent.querySelector('#t-bg');
-        const tslider = parent.querySelector('#t-slider');
-        const tresp = parent.querySelector('#t-resp');
-        slideCaptcha(tfg, tbg, tslider, tresp);
+      const captchaRoot = mutation.target.parentElement;
+      if (captchaRoot) {
+        const fg = captchaRoot.querySelector('#t-fg');
+        const bg = captchaRoot.querySelector('#t-bg');
+        const slider = captchaRoot.querySelector('#t-slider');
+        const resp = captchaRoot.querySelector('#t-resp');
+        slideCaptcha(fg, bg, slider, resp);
       }
       return;
     }

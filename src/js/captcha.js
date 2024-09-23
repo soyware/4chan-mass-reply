@@ -1,17 +1,13 @@
-import {
-  debugLog,
-} from './misc';
-
 // credits: pixelplanetdev
 
-// Decide if a pixel is closer to black than to white.
+// Decide if a pixel is closer to black than to white
 function isPixelDark(r, g, b) {
   return ((r + g + b) <= ((256 * 3) / 2));
 }
 
 /*
  * Get bordering pixels of transparent areas (the outline of the circles)
- * and return their coordinates with the neighboring color.
+ * and return their coordinates with the neighboring color
  */
 function getBoundaries(imgData) {
   const data = imgData.data;
@@ -50,14 +46,14 @@ function getBoundaries(imgData) {
 
     isPreviousOpaque = isCurrentOpaque;
   }
-  debugLog(`Boundry area of ${boundaries.length} pixels in captcha`);
+  // debugLog(`Boundry area of ${boundaries.length} pixels in captcha`);
   return boundaries;
 }
 
 /*
  * Slide the background image and compare the colors of the border pixels in
  * boundaries, the position with the most matches wins
- * Return in slider-percentage.
+ * Return in slider-percentage
  */
 function getBestPos(bgData, boundaries, slideWidth) {
   const data = bgData.data;
@@ -85,11 +81,11 @@ function getBestPos(bgData, boundaries, slideWidth) {
       bestPos = slidePos;
     }
   }
-  debugLog(`Best slider position with similarity of ${bestSimilarity}: ${bestPos}`);
+  // debugLog(`Best slider position with similarity of ${bestSimilarity}: ${bestPos}`);
   return (bestPos / slideWidth) * 100;
 }
 
-function getImageDataFromURI(uri) {
+function imageURIToData(uri) {
   return new Promise((resolve, reject) => {
     const img = new Image();
 
@@ -112,30 +108,29 @@ function getImageDataFromURI(uri) {
  * Automatically slide captcha into place
  * Arguments are the 't-fg', 't-bg', 't-slider', 't-resp' elements of the captcha
  */
-export function slideCaptcha(tfgElement, tbgElement, sliderElement, answerElement) {
-  // get data uris for captcha back- and foreground
-  const tbgUri = tbgElement.style.backgroundImage.slice(5, -2);
-  const tfgUri = tfgElement.style.backgroundImage.slice(5, -2);
+export function slideCaptcha(fg, bg, slider, resp) {
+  // slice 'url("' of data uris for captcha back- and foreground
+  const fgUri = fg.style.backgroundImage.slice(5, -2);
+  const bgUri = bg.style.backgroundImage.slice(5, -2);
 
-  if (!tbgUri || !tfgUri) {
-    // no slider present
-    return;
-  }
+  if (!fgUri || !bgUri || !slider || !resp) return;
 
   // load foreground (image with holes)
-  getImageDataFromURI(tfgUri).then((fgImgData) => {
-    // get array with pixels of foreground
-    // that we compare to background
-    const boundaries = getBoundaries(fgImgData);
+  imageURIToData(fgUri).then((fgImgData) => {
     // load background (image that gets slid)
-    getImageDataFromURI(tbgUri).then((bgImgData) => {
+    imageURIToData(bgUri).then((bgImgData) => {
+      // get array with pixels of foreground
+      // that we compare to background
+      const boundaries = getBoundaries(fgImgData);
+
       const slideWidth = bgImgData.width - fgImgData.width;
+
       // slide, compare and get best matching position
       const sliderPos = getBestPos(bgImgData, boundaries, slideWidth);
+
       // slide in the UI
-      sliderElement.value = sliderPos;
-      sliderElement.dispatchEvent(new Event('input'), { bubbles: true });
-      answerElement.focus();
+      slider.value = sliderPos;
+      slider.dispatchEvent(new Event('input'), { bubbles: true });
     });
   });
 }
