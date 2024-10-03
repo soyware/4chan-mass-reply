@@ -1,75 +1,85 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/popup.css">
+  </head>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../css/popup.css" />
-</head>
+  <body>
+    <div style="margin:auto; width:fit-content;">
+      <img src="/icons/4chan.png" style="vertical-align:middle;">
+      <h1>4chan Mass Reply - Shitposting Suite</h1>
+    </div>
+    
+    <div>
+      <label for="fakeFilename">Fake filename:</label>
+      <select id="fakeFilename">
+        <option value="off">Disabled</option>
+        <option value="unix">Unix Timestamp</option>
+        <option value="kym">KYM</option>
+        <option value="reddit">Reddit</option>
+        <option value="ifunny">iFunny</option>
+        <option value="funnyjunk">Funnyjunk</option>
+        <option value="9gag">9GAG</option>
+        <option value="twitter">Twitter</option>
+        <option value="facebook">Facebook / Instagram</option>
+        <option value="tumblr">Tumblr</option>
+        <option value="iphoneIMG">iPhone (IMG)</option>
+        <option value="iphoneGUID">iPhone (GUID)</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="random">Random</option>
+      </select>
+    </div>
+    
+    <div>
+      <label for="watermark">Watermark:</label>
+      <select id="watermark">
+        <option value="off">Disabled</option>
+        <option value="reddit">Reddit</option>
+        <option value="ifunny">iFunny</option>
+        <option value="nsfwfilterBypass">NSFW Filter Bypass</option>
+      </select>
+    </div>
+    
+    <div id="customReddit">
+      <div>
+        <label for="subreddit">Subreddit:</label>
+        <input id="subreddit" placeholder="leave empty for random">
+      </div>
+      
+      <div>
+        <label for="username">Username:</label>
+        <input id="username" placeholder="leave empty for random">
+      </div>
+    </div>
+    
+    <div>
+      <label for="quoteFormat">Mass-reply format:</label>
+      <select id="quoteFormat">
+        <option value="single">Single Line</option>
+        <option value="max">Maximize Line Count</option>
+        <option value="align">Align</option>
+      </select>
+    </div>
+    
+    <label><input type="checkbox" id="quoteBottom">Quote bottom posts if the thread is too long</label>
+    <br>
+    <label><input type="checkbox" id="changeFileHash">Change file hash</label>
+    <br>
+    <label><input type="checkbox" id="persistentFile">Keep last selected file after posting or refreshing the page</label>
+    <br>
+    <label><input type="checkbox" id="bypassWordfilter">Bypass wordfilter</label>
+    <br>
+    <label><input type="checkbox" id="autoDeleteCookie">Automatically delete cookie on ban evasion error</label>
+    <br>
+    <label><input type="checkbox" id="slideCaptcha">Automatically slide captcha</label>
+    <br>
+    <label><input type="checkbox" id="optionRadios">Replace options field with radio buttons</label>
+    <br>
+    <label><input type="checkbox" id="highlightKym">Highlight KYM filenames</label>
 
-<body>
-	<div id="popup-content">
-		<div>
-			<div style="margin:auto; width: fit-content;">
-				<img src="/icons/4chan.png" style="vertical-align:middle">
-				<h1 style="display:inline">4chan Mass Reply - Shitposting suite</h1>
-			</div>
-		</div>
-		<div>
-			<span>Fake filename:</span>
-			<select id="fakeFilename">
-				<option value="off">Disabled</option>
-				<option value="unix">Unix Timestamp</option>
-				<option value="kym">KYM</option>
-				<option value="reddit">Reddit</option>
-				<option value="ifunny">iFunny</option>
-				<option value="funnyjunk">Funnyjunk</option>
-				<option value="9gag">9GAG</option>
-				<option value="twitter">Twitter</option>
-				<option value="facebook">Facebook / Instagram</option>
-				<option value="tumblr">Tumblr</option>
-				<option value="iphoneIMG">iPhone (IMG)</option>
-				<option value="iphoneGUID">iPhone (GUID)</option>
-				<option value="whatsapp">WhatsApp</option>
-				<option value="random">Random</option>
-			</select>
-		</div>
-		<div>
-			<span>Watermark:</span>
-			<select id="watermark">
-				<option value="off">Disabled</option>
-				<option value="reddit">Reddit</option>
-				<option value="ifunny">iFunny</option>
-				<option value="nsfwfilterbypass">NSFW filter bypass</option>
-			</select>
-		</div>
-		<div>
-			<span>Mass-reply format:</span>
-			<select id="quoteFormat">
-				<option value="single">Single Line</option>
-				<option value="max">Maximize Line Count</option>
-				<option value="align">Align</option>
-			</select>
-		</div>
-		<label><input type="checkbox" id="quoteBottom" name="quoteBottom" />Quote bottom posts if the thread is too long</label>
-		<br>
-		<label><input type="checkbox" id="changeFileHash" name="changeFileHash" />Change file hash</label>
-		<br>
-		<label><input type="checkbox" id="persistentFile" name="persistentFile" />Keep last selected file after posting or refreshing the page</label>
-		<br>
-		<label><input type="checkbox" id="bypassWordfilter" name="bypassWordfilter" />Bypass wordfilter</label>
-		<br>
-		<label><input type="checkbox" id="autoDeleteCookie" name="autoDeleteCookie" />Automatically delete cookie on ban evasion error</label>
-		<br>
-		<label><input type="checkbox" id="slideCaptcha" name="slideCaptcha" />Automatically slide captcha</label>
-		<br>
-		<label><input type="checkbox" id="optionRadios" name="optionRadios" />Replace options field with radio buttons</label>
-		<br>
-		<label><input type="checkbox" id="highlightKym" name="highlightKym" />Highlight KYM filenames</label>
-	</div>
-
-	<script src="../js/browser-polyfill.min.js"></script>
-	<script src="../js/popup.js"></script>
-</body>
-
+    <script src="../js/browser-polyfill.min.js"></script>
+    <script src="../js/popup.js"></script>
+  </body>
 </html>

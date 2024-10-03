@@ -107,7 +107,13 @@ function fileChanged(event) {
 
       if (settings.watermark !== 'off') {
         watermarkPromise = new Promise((resolve) => {
-          drawWatermark(target.files[0], quality, settings.watermark).then((watermarkedFile) => {
+          drawWatermark(
+            target.files[0],
+            settings.watermark,
+            settings.subreddit,
+            settings.username,
+            quality,
+          ).then((watermarkedFile) => {
             if (watermarkedFile) {
               target.files = createFileList(watermarkedFile);
             }
@@ -158,6 +164,7 @@ function bypassWordfilter(text) {
 
   for (let i = 0; i < wordFilters.length; ++i) {
     const pattern = wordFilters[i];
+
     text = text.replace(pattern, (match) => {
       // r9k doesn't allow non ascii
       if (board !== 'r9k') {
@@ -171,6 +178,7 @@ function bypassWordfilter(text) {
           C: 'Ϲ',
           d: 'ԁ',
           F: 'Ϝ',
+          g: 'ɡ',
           H: 'Η',
           h: 'ℎ',
           k: 'ƙ',
@@ -188,9 +196,11 @@ function bypassWordfilter(text) {
 
         for (let j = match.length - 1; j >= 0; --j) {
           const letter = match[j];
-          if (replacements[letter]) {
-            return match.slice(0, j) + replacements[letter] + match.slice(j + 1);
-          }
+          if (!replacements[letter]) continue;
+
+          const homoglyphed = match.slice(0, j) + replacements[letter] + match.slice(j + 1);
+
+          return homoglyphed;
         }
       }
 
@@ -199,6 +209,7 @@ function bypassWordfilter(text) {
       if (match.split(' ').length > 1) {
         const lastSpaceIndex = match.lastIndexOf(' ');
         const addedSymbol = `${match.slice(0, lastSpaceIndex)} '${match.slice(lastSpaceIndex + 1)}`;
+
         pattern.lastIndex = 0;
         if (!pattern.test(addedSymbol)) {
           return addedSymbol;
@@ -222,6 +233,7 @@ function bypassWordfilter(text) {
 
       // check if the filter can be bypassed by an underscore prefix
       const prefixed = `_${match}`;
+
       pattern.lastIndex = 0;
       if (!pattern.test(prefixed)) {
         return prefixed;
@@ -245,7 +257,9 @@ function createButton(parentElement, label, title, listener) {
   btn.classList.add('mrBtn');
   btn.textContent = label;
   btn.title = title;
+
   parentElement.appendChild(btn);
+
   btn.addEventListener('click', listener);
 }
 
@@ -383,7 +397,13 @@ function gotTextArea(element) {
     });
   }
 
-  element.parentElement.parentElement.insertBefore(div, element.parentElement.nextSibling);
+  const isOriginalForm = (element.parentElement.tagName === 'TD');
+
+  if (isOriginalForm) {
+    element.after(div);
+  } else {
+    element.parentElement.after(div);
+  }
 }
 
 function createOptionRadio(parentElement, option) {

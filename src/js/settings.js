@@ -1,6 +1,9 @@
+// popup element ids
 export const settings = {
   fakeFilename: 'off',
   watermark: 'off',
+  subreddit: '',
+  username: '',
   changeFileHash: false,
   autoDeleteCookie: true,
   bypassWordfilter: true,

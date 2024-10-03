@@ -6,10 +6,17 @@ import {
   settings,
 } from './settings';
 
+function handleWatermarkChange(element) {
+  if (element.id !== 'watermark') return;
+
+  const customReddit = document.getElementById('customReddit');
+  customReddit.style.display = (element.value !== 'reddit' ? 'none' : '');
+}
+
 browser.storage.local.get(settings).then((localStorage) => {
+  // init popup settings to local storage values
   const keys = Object.keys(localStorage);
   for (let i = 0; i < keys.length; ++i) {
-    // init popup settings to local storage values
     const key = keys[i];
 
     const element = document.getElementById(key);
@@ -24,13 +31,20 @@ browser.storage.local.get(settings).then((localStorage) => {
       element.value = localStorage[key];
     }
 
-    // set local storage values on popup settings change
+    handleWatermarkChange(element);
+
     element.onchange = (event) => {
-      const value = (event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+      const target = event.target;
+
+      handleWatermarkChange(target);
+
+      // set local storage values on popup settings change
+      const value = (target.type === 'checkbox' ? target.checked : target.value);
+
       browser.storage.local.set({
-        [event.target.id]: value,
+        [target.id]: value,
       }).then(() => {
-        debugLog(`Local storage: "${event.target.id}" set to "${value}"`);
+        debugLog(`Local storage: "${target.id}" set to "${value}"`);
       }, (error) => {
         debugLog(`Error setting local storage: ${error}`);
       });

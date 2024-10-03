@@ -1,14 +1,14 @@
+.comtxt {
+  height: 10em;
+  margin: 0 !important;
+}
+
 .mrBtn {
-	font-size: 15px;
-	padding: 3px;
+  font-size: 15px;
+  padding: 3px;
 }
 
 .mrBtn:hover {
-	cursor: pointer;
-	font-weight: bold;
-}
-
-.comtxt {
-	min-width: 24em !important;
-	height: 15em;
+  cursor: pointer;
+  font-weight: bold;
 }
