@@ -77,9 +77,6 @@ export function getBoardInfo() {
     /\bFams\b/g,
     /\bFAMS\b/g,
     /\bsoy/gi,
-    /n\x69gger/gi, // can't say more than 3 times these 3
-    /f\x61ggot/gi,
-    /t\x72ann/gi, // no y
   ];
 
   let filtersToRemove = [];
